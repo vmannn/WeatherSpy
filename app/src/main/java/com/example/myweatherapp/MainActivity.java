@@ -11,16 +11,27 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
 
     String API_KEY = "4e50edb8686ec742118a9852ad2960dd";
-    long MINIMUM_TIME = 6000;
+    long MINIMUM_TIME = 5000;
     float MINIMUM_DISTANCE = 1000;
     int REQ_CODE = 123;
+    String API_URL = "http://api.openweathermap.org/data/2.5/weather";
+    String FORECAST_API_URL = "http://api.openweathermap.org/data/2.5/onecall?";
 
-    String LOCATION_PROVIDER = LocationManager.NETWORK_PROVIDER;
+    String LOCATION_PROVIDER = LocationManager.GPS_PROVIDER;
 
     LocationManager mYLocationManager;
     LocationListener mYLocationListener;
@@ -38,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.d("NyWeatherApp", "onResume activated");
+        Log.d("MyWeatherApp", "onResume activated");
         Log.d("MyWeatherApp", "Getting data for location");
         CurrentLocationWeather();
 
@@ -55,6 +66,24 @@ public class MainActivity extends AppCompatActivity {
 
                 String longitude = String.valueOf(location.getLongitude());
                 String latitude = String.valueOf(location.getLatitude());
+                String exclude = "current,minutely,hourly";
+                Log.d("MyWeatherApp", "longitude: " + longitude);
+                Log.d("MyWeatherApp", "latitude: " + latitude);
+
+                String units = "imperial";
+                RequestParams dailyparams = new RequestParams();
+                RequestParams forecastparams = new RequestParams();
+                dailyparams.put("lon", longitude);
+                dailyparams.put("lat", latitude);
+                dailyparams.put("units", units);
+                dailyparams.put("appid", API_KEY);
+                forecastparams.put("lon", longitude);
+                forecastparams.put("lat", latitude);
+                forecastparams.put("units", units);
+                forecastparams.put("appid", API_KEY);
+                forecastparams.put("exclude", exclude);
+                APICall(dailyparams, forecastparams);
+
 
             }
 
@@ -109,8 +138,69 @@ public class MainActivity extends AppCompatActivity {
 
         else{
 
-            Log.d("MyweatherApp", "Permission denied");
+            Log.d("MyWeatherApp", "Permission denied");
         }
     }
+
+
+    private void APICall(RequestParams dailyparams, RequestParams forecastparams){
+
+        AsyncHttpClient myclient = new AsyncHttpClient();
+
+        myclient.get(API_URL, dailyparams, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response2){
+
+            Log.d("MyWeatherApp", response2.toString() + "\n***********************************************************\n");
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response2){
+                Log.e("MyWeatherApp", "faiure" + e.toString());
+                Log.d("MyWeatherApp", "faiure" + e.toString());
+                Toast.makeText(MainActivity.this, "Network error please try again", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+
+        });
+
+
+
+        AsyncHttpClient myclient2 = new AsyncHttpClient();
+
+        myclient2.get(FORECAST_API_URL, forecastparams, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response2){
+
+                Log.d("MyWeatherApp", response2.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response2){
+                Log.e("MyWeatherApp", "faiure" + e.toString());
+                Log.d("MyWeatherApp", "faiure" + e.toString());
+                Toast.makeText(MainActivity.this, "Network error please try again", Toast.LENGTH_SHORT).show();
+
+
+            }
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+
 }
 

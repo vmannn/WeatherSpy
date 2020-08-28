@@ -1,5 +1,7 @@
 package com.example.myweatherapp;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,12 +16,11 @@ public class CurrentWeatherDataModel {
     private String icon;
     private ArrayList<ForecastDataModel> sevendayforecast;
 
-    public static CurrentWeatherDataModel convertJson(JSONObject dailyjson, JSONObject forecastjson) {
+    public static CurrentWeatherDataModel convertJson(JSONObject dailyjson) {
 
         CurrentWeatherDataModel weather = new CurrentWeatherDataModel();
         try {
             weather.city = dailyjson.getString("name");
-
             weather.condition = dailyjson.getJSONArray("weather")
                     .getJSONObject(0).getInt("id");
 
@@ -31,9 +32,9 @@ public class CurrentWeatherDataModel {
 
 
             double temp = (dailyjson.getJSONObject("main").getDouble("temp"));
-            weather.temperature = String.valueOf(Math.rint(temp));
+            weather.temperature = String.valueOf((int) Math.rint(temp));
 
-            for(int i = 0; i< 8; ++i) {
+           /* for(int i = 0; i< 8; ++i) {
             ForecastDataModel insert = new ForecastDataModel();
 
 
@@ -49,11 +50,12 @@ public class CurrentWeatherDataModel {
                 insert.setIcon(forecastjson.getJSONArray("daily").getJSONObject(i).getJSONArray("weather")
                         .getJSONObject(0).getString("icon"));
 
-                weather.sevendayforecast.add(insert);
+                weather.sevendayforecast.add(insert); */
 
-            }
+
         } catch (JSONException e) {
 
+            Log.d("MyWheatherApp", "WHHHHHYYYYYYYYYYYYY");
             e.printStackTrace();
 
         }
@@ -61,6 +63,14 @@ public class CurrentWeatherDataModel {
 
         return weather;
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getIcon() {
+        return icon;
     }
 
     public String getCity() {

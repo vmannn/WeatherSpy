@@ -47,13 +47,13 @@ public class ForecastDataModel {
 
 
                  double temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                         .getDouble("min");
-                 insert.setMaximum_temperature(String.valueOf(Math.rint(temp)));
+                         .getDouble("max");
+                 insert.setMaximum_temperature(String.valueOf( (int) Math.rint(temp)));
 
 
                  temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                         .getDouble("max");
-                 insert.setMinimum_temperature(String.valueOf(Math.rint(temp)));
+                         .getDouble("min");
+                 insert.setMinimum_temperature(String.valueOf( (int) Math.rint(temp)));
 
                  insert.setIcon(forecastjson.getJSONArray("daily").getJSONObject(i).getJSONArray("weather")
                          .getJSONObject(0).getString("icon"));

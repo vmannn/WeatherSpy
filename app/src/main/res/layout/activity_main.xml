@@ -7,333 +7,191 @@
     android:background="#00E02525"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#3C56FA"
-        android:orientation="vertical">
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10sp" />
-
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:text="Current Location" />
-
-        <TextView
-            android:id="@+id/City"
-            android:layout_width="wrap_content"
-            android:layout_height="70sp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Location"
-            android:textSize="60sp" />
-
-        <TextView
-            android:id="@+id/Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Description"
-
-            android:textSize="20sp" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="1sp" />
-
-        <ImageView
-            android:id="@+id/Icon"
-            android:layout_width="match_parent"
-            android:layout_height="130sp"
-            android:adjustViewBounds="true"
-            app:srcCompat="@drawable/not_sure" />
-
-        <TextView
-            android:id="@+id/Temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Temperature"
-            android:textSize="50dp" />
-
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="30sp" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#3C56FA"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/CityNameForecast"
+            <Space
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:text="TextView" />
+                android:layout_height="28dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="160sp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <HorizontalScrollView
+                <EditText
+                    android:id="@+id/AddLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:ems="10"
+                    android:hint="Add Location"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <androidx.gridlayout.widget.GridLayout
+                    <ImageView
+                        android:id="@+id/addbutton"
                         android:layout_width="wrap_content"
-
-                        android:layout_height="match_parent">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/high1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/high2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/high3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low3"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-
-                            <TextView
-                                android:id="@+id/high4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low4"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-
-                            <TextView
-                                android:id="@+id/high5"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon5"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low5"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/high6"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon6"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low6"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/high7"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/icon7"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/low7"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/textView11"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-                            <ImageView
-                                android:id="@+id/imageView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/not_sure" />
-
-                            <TextView
-                                android:id="@+id/textView12"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TextView" />
-
-
-                        </LinearLayout>
-                    </androidx.gridlayout.widget.GridLayout>
-                </HorizontalScrollView>
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="addLocation"
+                        app:srcCompat="@drawable/addbutton" />
+                </RelativeLayout>
 
             </LinearLayout>
-        </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="10sp" />
 
             <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="    Add Location    " />
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="180dp"
+                android:id="@+id/textView16"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                android:gravity="center"
+                android:text="Current Location"
+                android:textSize="20sp" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton2"
+            <TextView
+                android:id="@+id/City"
+                android:layout_width="wrap_content"
+                android:layout_height="70sp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Location"
+                android:textSize="60sp" />
+
+            <TextView
+                android:id="@+id/Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Description"
+
+                android:textSize="20sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="1sp" />
+
+            <ImageView
+                android:id="@+id/Icon"
+                android:layout_width="match_parent"
+                android:layout_height="130sp"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/not_sure" />
+
+            <TextView
+                android:id="@+id/Temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|center_vertical"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="center_vertical"
-                app:srcCompat="@android:drawable/ic_input_add" />
+                android:layout_gravity="center"
+                android:text="Temperature"
+                android:textSize="50dp" />
+
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="30sp" />
+
+            <LinearLayout
+                android:id="@+id/ForecastLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/CityNameForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:textSize="25sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:orientation="horizontal">
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fadeScrollbars="false">
+
+                        <androidx.gridlayout.widget.GridLayout
+                            android:layout_width="wrap_content"
+
+                            android:layout_height="match_parent">
+
+                            <fragment
+                                android:id="@+id/fragment"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment2"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment3"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment4"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment5"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment6"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment7"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                            <fragment
+                                android:id="@+id/fragment8"
+                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:layout_width="110dp"
+                                android:layout_height="match_parent" />
+
+                        </androidx.gridlayout.widget.GridLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/CityName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:text="Textview" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:fadeScrollbars="false"
+            android:layout_height="match_parent">
+
+            <androidx.gridlayout.widget.GridLayout
+                android:layout_width="wrap_content"
+
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/day1"
+                    android:name ="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day2"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day3"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day4"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day5"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day6"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day7"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+                <fragment
+                    android:id="@+id/day8"
+                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:layout_width="110dp"
+                    android:layout_height="match_parent" />
+
+            </androidx.gridlayout.widget.GridLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
+
+</LinearLayout>

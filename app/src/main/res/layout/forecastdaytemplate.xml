@@ -6,12 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ForecastDayTemplate">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- TODO: Update blank fragment settingsize -->
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="110dp"
+        android:layout_height="140dp"
         android:orientation="vertical">
 
 

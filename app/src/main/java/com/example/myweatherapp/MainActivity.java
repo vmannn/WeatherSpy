@@ -11,6 +11,8 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,14 +20,17 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -72,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     JSONObject daily;
     JSONObject forecast;
     ArrayList <WeatherPack> mWeatherPacks = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     }
 
     private void CurrentLocationWeather() {
@@ -135,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
         mYLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+
+
+
+                Button edit = findViewById(R.id.editButton);
+
+                //if(mWeatherPacks.size() > 1)
+
+
+
 
                 String longitude = String.valueOf(location.getLongitude());
                 String latitude = String.valueOf(location.getLatitude());
@@ -203,15 +219,41 @@ public class MainActivity extends AppCompatActivity {
 
     static public String GetIconUrl(String icon){
 
-        String URL = "https://openweathermap.org/img/wn/" + icon + "@2x.png";
+        return "https://openweathermap.org/img/wn/" + icon + "@2x.png";
 
-        return URL;
+    }
+
+
+    public void Edit(View v){
+
+        if(mWeatherPacks.size() < 2){
+
+
+
+           // Toast.makeText(MainActivity.this, "Add a forecast from a city to edit", Toast.LENGTH_LONG).show();
+
+        }
+
 
     }
 
 
 
     public void addLocation(View v){
+
+        Button edit = findViewById(R.id.editButton);
+        Button done = findViewById(R.id.doneButton);
+
+
+        if(edit.getVisibility() == View.INVISIBLE) {
+
+            edit.setVisibility(View.VISIBLE);
+            done.setVisibility(View.GONE);
+
+
+
+        }
+
 
         ImageView add =  findViewById(R.id.addbutton);
         final EditText locationText = findViewById(R.id.AddLocation);
@@ -302,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                         else{
 
                             mWeatherPacks.add(mypack);
-                            SetView();
+                            SetForecastView();
 
                         }
 
@@ -374,8 +416,137 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void doneWithDelete(View v){
+
+        doneDeleting();
+
+    }
 
 
+
+    public void doneDeleting(){
+
+
+        EditText addLocation = findViewById(R.id.AddLocation);
+        addLocation.setEnabled(true);
+        ImageView addButton = findViewById(R.id.addbutton);
+        addButton.setClickable(true);
+
+
+        final LinearLayout forecastLayout = findViewById(R.id.ForecastLayout);
+
+
+        int count = forecastLayout.getChildCount();
+
+        for(int i = 2; i < count; ++i) {
+            View current = forecastLayout.getChildAt(i);
+            current.setId(View.generateViewId());
+            LinearLayout cityWrap = findViewById(current.getId());
+            LinearLayout cityAndDelete = (LinearLayout) cityWrap.getChildAt(0);
+            View deletion = cityAndDelete.getChildAt(0);
+            deletion.setVisibility(View.GONE);
+
+        }
+
+        Button editButton = findViewById(R.id.editButton);
+        editButton.setVisibility(View.VISIBLE);
+
+        Button doneButton = findViewById(R.id.doneButton);
+        doneButton.setVisibility(View.GONE);
+
+
+
+    }
+
+
+    public void deleteForecast(View v){
+
+
+        EditText addLocation = findViewById(R.id.AddLocation);
+        addLocation.setEnabled(false);
+        ImageView addButton = findViewById(R.id.addbutton);
+        addButton.setClickable(false);
+
+       Button editButton = findViewById(R.id.editButton);
+
+        editButton.setVisibility(View.GONE);
+
+        Button doneButton = findViewById(R.id.doneButton);
+
+        doneButton.setVisibility(View.VISIBLE);
+
+
+
+        final LinearLayout forecastLayout = findViewById(R.id.ForecastLayout);
+
+
+
+
+
+
+        int count = forecastLayout.getChildCount();
+        View current = null;
+
+
+        for(int i = 2; i < count; ++i) {
+
+            current = forecastLayout.getChildAt(i);
+            current.setId(View.generateViewId());
+            LinearLayout cityWrap = findViewById(current.getId());
+            LinearLayout hg = (LinearLayout) cityWrap.getChildAt(0);
+
+            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            final ImageButton deleteButton = new ImageButton(this);
+            deleteButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            deleteButton.setImageResource(R.drawable.deletebutton);
+            deleteButton.setBackgroundColor(0x3C56FA);
+            hg.addView(deleteButton, 0);
+
+
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    View current = (View) deleteButton.getParent();
+                    LinearLayout removal = (LinearLayout) current.getParent();
+                    ((ViewGroup)removal.getParent()).removeView(removal);
+
+                    doneDeleting(); //remove the delete buttons
+
+
+                    Button editButton = findViewById(R.id.editButton);
+                    editButton.setVisibility(View.VISIBLE);
+
+                    Button doneButton = findViewById(R.id.doneButton);
+                    doneButton.setVisibility(View.GONE);
+
+
+                }
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+
+
+    }
 
     void SetView(){
 
@@ -450,118 +621,130 @@ public class MainActivity extends AppCompatActivity {
             ForecastTemplate.setArguments(forecastDayBundle);
         }
 
-        final int[] DayIds = {R.id.day1, R.id.day2, R.id.day3,
-                R.id.day4, R.id.day5, R.id.day6, R.id.day7,
-                R.id.day8};
-        //LayoutInflater inflater = getLayoutInflater();
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        LinearLayout forecastLayout = findViewById(R.id.ForecastLayout);
-
-   //     if(forecastLayout.getChildCount() > 0)
-          // forecastLayout.removeAllViews();
-       // View v;
-
-        Log.d("MyWeatherApp", mWeatherPacks.size() + " this is the size");
-
-        for(int i = 1; i < mWeatherPacks.size() && mWeatherPacks.size() != 1; ++i) {
 
 
-
-
-          //  View v = inflater.inflate(R.layout.addlocation, forecastLayout, false);
-
-
-            LinearLayout forecastContainer = new LinearLayout(this);
-            Resources r = getResources();
-            float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140, r.getDisplayMetrics());
-            //(int) height
-            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            forecastContainer.setLayoutParams(lp1);
-            forecastContainer.setOrientation(LinearLayout.HORIZONTAL);
-            forecastContainer.setId(View.generateViewId());
-            HorizontalScrollView scroll = new HorizontalScrollView(this);
-            scroll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            scroll.setScrollbarFadingEnabled(false);
-
-            forecastLayout.addView(scroll);
-
-            scroll.addView(forecastContainer);
-
-
-
-
-
-
-
-            for(int j = 0; j < mWeatherPacks.get(i).Forecast.size(); ++j) {
-               /* FragmentManager fm = getSupportFragmentManager();
-                ForecastDayTemplate ForecastTemplate = new ForecastDayTemplate();
-                Log.d("MyWeatherApp", "we get here");
-
-                getSupportFragmentManager().findFragmentByTag("ggfgfd");
-
-                tag = Integer.toString(Integer.parseInt(tag) + 1);
-                fm.beginTransaction().replace(DayIds[j], ForecastTemplate, tag).commit();
-                Bundle forecastDayBundle = new Bundle();
-                forecastDayBundle.putString("dailyHigh", mWeatherPacks.get(i).getForecast().get(j).getMaximum_temperature());
-                forecastDayBundle.putString("dailyLow", mWeatherPacks.get(i).getForecast().get(j).getMinimum_temperature());
-                forecastDayBundle.putString("Icon", mWeatherPacks.get(i).getForecast().get(j).getIcon());
-
-                ForecastTemplate.setArguments(forecastDayBundle); */
-
-
-
-
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                ForecastDayTemplate forecastDayTemplate = new ForecastDayTemplate();
-                fragmentTransaction.add(forecastContainer.getId(), forecastDayTemplate);
-                fragmentTransaction.commit();
-                Bundle forecastDayBundle = new Bundle();
-                forecastDayBundle.putString("dailyHigh", mWeatherPacks.get(i).getForecast().get(j).getMaximum_temperature());
-                forecastDayBundle.putString("dailyLow", mWeatherPacks.get(i).getForecast().get(j).getMinimum_temperature());
-                forecastDayBundle.putString("Icon", mWeatherPacks.get(i).getForecast().get(j).getIcon());
-                forecastDayTemplate.setArguments(forecastDayBundle);
-
-
-
-
-
-
-
-            }
-
-
-
-          //  forecastLayout.addView(v);
-        }
 
 
 
     }
 
 
-     void locationReceived(){
-
-         final EditText newLocation = findViewById(R.id.AddLocation);
-         newLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-             @Override
-             public void onFocusChange(View v, boolean hasFocus) {
-                 if(hasFocus)
-                     newLocation.setHint("");
-                     else
-                         newLocation.setHint("Add Location");
-             }
-         });
+    void SetForecastView(){
 
 
+        final String[] DaysOfTheWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday"};
+
+
+        String weekday = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(System.currentTimeMillis());
+
+        int arrayStart = 0;
+
+        for(int i = 0; i < DaysOfTheWeek.length; ++i){
+
+            if (weekday.equals(DaysOfTheWeek[i])) {
+                arrayStart = i;
+                break;
+            }
+
+        }
+
+        LinearLayout forecastLayout = findViewById(R.id.ForecastLayout);
+
+        for(int i = mWeatherPacks.size() -1; i < mWeatherPacks.size() && mWeatherPacks.size() != 1; ++i) {
+
+            LinearLayout forecastContainer = new LinearLayout(this);
+            Resources r = getResources();
+            float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140, r.getDisplayMetrics());
+            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            forecastContainer.setLayoutParams(lp1);
+            forecastContainer.setOrientation(LinearLayout.HORIZONTAL);
+            forecastContainer.setId(View.generateViewId());
+            LinearLayout cityWrap = new LinearLayout(this);
+            cityWrap.setLayoutParams(lp1);
+            cityWrap.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout deleteWrap = new LinearLayout(this);
+            deleteWrap.setOrientation(LinearLayout.HORIZONTAL);
+            deleteWrap.setLayoutParams(lp3);
+            TextView currentCity = new TextView(this);
+            currentCity.setLayoutParams(lp3);
+            currentCity.setText(mWeatherPacks.get(i).getWeather().getCity());
+            currentCity.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+            cityWrap.addView(deleteWrap);
+            deleteWrap.addView(currentCity);
+            GridLayout gridLayout = new GridLayout(this);
+            gridLayout.setColumnCount(8);
+            gridLayout.setRowCount(1);
+            gridLayout.setLayoutParams(lp1);
+            gridLayout.setId(View.generateViewId());
+            HorizontalScrollView scroll = new HorizontalScrollView(this);
+            scroll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            scroll.setScrollbarFadingEnabled(false);
+
+            forecastLayout.addView(cityWrap);
+            cityWrap.addView(scroll);
+
+
+            scroll.addView(forecastContainer);
+
+            forecastContainer.addView(gridLayout);
+            final ScrollView Scrollme = findViewById(R.id.parentScroll);
+
+
+            for(int j = 0, l = arrayStart; j < mWeatherPacks.get(i).Forecast.size(); ++j) {
+
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ForecastDayTemplate forecastDayTemplate = new ForecastDayTemplate();
+                fragmentTransaction.add(gridLayout.getId(), forecastDayTemplate);
+                fragmentTransaction.commit();
+                Bundle forecastDayBundle = new Bundle();
+                forecastDayBundle.putString("dailyHigh", mWeatherPacks.get(i).getForecast().get(j).getMaximum_temperature());
+                forecastDayBundle.putString("dailyLow", mWeatherPacks.get(i).getForecast().get(j).getMinimum_temperature());
+                forecastDayBundle.putString("Icon", mWeatherPacks.get(i).getForecast().get(j).getIcon());
+
+                if(j == 0)
+                    forecastDayBundle.putString("weekday", "Today");
+                else
+                    forecastDayBundle.putString("weekday", DaysOfTheWeek[l]);
+
+
+                if(l == DaysOfTheWeek.length -1)
+                    l = 0;
+                else
+                    l+= 1;
+
+                forecastDayTemplate.setArguments(forecastDayBundle);
+
+
+                Scrollme.fullScroll(ScrollView.FOCUS_DOWN);
+
+            }
+
+
+
+        }
 
 
 
 
-     }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(mYLocationManager != null){
+            mYLocationManager.removeUpdates(mYLocationListener);
+
+        }
+
+
+
+    }
 }
 

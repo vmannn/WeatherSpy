@@ -73,7 +73,7 @@ public class ForecastDayTemplate extends Fragment {
 
 
 
-        // Inflate the layout for this fragment
+        // Inflate the settingsize for this fragment
        return view;
     }
 

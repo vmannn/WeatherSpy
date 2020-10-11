@@ -9,7 +9,7 @@ For any inquires, please Email : vicochias@gmail.com.
 WeatherSpy is a simple intuitive weather app that displays the weather for your current location. Additionally, a user is able to add and delete forecasts 
 for any city that they like as well.
 
-![alt text](https://github.com/vmannn/WeatherSpy/blob/Master/weatherspypic.png?raw=true)
+![alt text](https://github.com/vmannn/WeatherSpy/blob/Master/weatherspypic.png)
 
 
 # In Depth

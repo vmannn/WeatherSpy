@@ -1,3 +1,6 @@
+//Victor Ochia. 2020 WeatherSpy
+
+
 package com.example.myweatherapp;
 
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import java.util.Objects;
  * Use the {@link ForecastDayTemplate#newInstance} factory method to
  * create an instance of this fragment.
  */
+
+//Fragment class for a day within forecast.
 public class ForecastDayTemplate extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -73,7 +78,7 @@ public class ForecastDayTemplate extends Fragment {
 
 
 
-        // Inflate the settingsize for this fragment
+        // Inflate the settingSize for this fragment
        return view;
     }
 

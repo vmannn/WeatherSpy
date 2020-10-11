@@ -1,3 +1,6 @@
+//Victor Ochia. 2020 WeatherSpy
+
+
 package com.example.myweatherapp;
 
 import org.json.JSONException;
@@ -5,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+//class gets the forecast for the day of the week when we feed it a json.
 public class ForecastDataModel {
 
      private String minimum_temperature;
@@ -70,39 +74,6 @@ public class ForecastDataModel {
                  return sevendayforecast;
      }
 
-
-    /*public ForecastDataModel ConvertJson(JSONObject forecastjson){
-
-        for(int i = 0; i< 8; ++i) {
-            ForecastDataModel insert = new ForecastDataModel();
-
-            try{
-
-            double temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                    .getDouble("min");
-            insert.setMaximum_temperature(String.valueOf(Math.rint(temp)));
-
-
-            temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                    .getDouble("max");
-            insert.setMinimum_temperature(String.valueOf(Math.rint(temp)));
-
-            insert.setIcon(forecastjson.getJSONArray("daily").getJSONObject(i).getJSONArray("weather")
-                    .getJSONObject(0).getString("icon"));
-
-            weather.sevendayforecast.add(insert);
-
-        }
-    } catch (
-    JSONException e) {
-
-        e.printStackTrace();
-
-    }
-
-
-
-*/
 
 
 }

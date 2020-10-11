@@ -1,29 +1,26 @@
+//Victor Ochia. 2020 WeatherSpy
+
+
+
 package com.example.myweatherapp;
-
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 
+//class gets the current weather and description
 public class CurrentWeatherDataModel {
 
     private String temperature;
-    private int condition;
     private String description;
     private String city;
     private String icon;
-    private ArrayList<ForecastDataModel> sevendayforecast;
 
+     //
     public static CurrentWeatherDataModel convertJson(JSONObject dailyjson) {
 
         CurrentWeatherDataModel weather = new CurrentWeatherDataModel();
         try {
             weather.city = dailyjson.getString("name");
-            weather.condition = dailyjson.getJSONArray("weather")
-                    .getJSONObject(0).getInt("id");
-
             weather.description = dailyjson.getJSONArray("weather").getJSONObject(0).getString("description");
             weather.icon = dailyjson.getJSONArray("weather")
                     .getJSONObject(0).getString("icon");
@@ -34,28 +31,9 @@ public class CurrentWeatherDataModel {
             double temp = (dailyjson.getJSONObject("main").getDouble("temp"));
             weather.temperature = String.valueOf((int) Math.rint(temp));
 
-           /* for(int i = 0; i< 8; ++i) {
-            ForecastDataModel insert = new ForecastDataModel();
-
-
-                temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                        .getDouble("min");
-                insert.setMaximum_temperature(String.valueOf(Math.rint(temp)));
-
-
-                temp = forecastjson.getJSONArray("daily").getJSONObject(i).getJSONObject("temp")
-                        .getDouble("max");
-                insert.setMinimum_temperature(String.valueOf(Math.rint(temp)));
-
-                insert.setIcon(forecastjson.getJSONArray("daily").getJSONObject(i).getJSONArray("weather")
-                        .getJSONObject(0).getString("icon"));
-
-                weather.sevendayforecast.add(insert); */
-
 
         } catch (JSONException e) {
 
-            Log.d("MyWheatherApp", "WHHHHHYYYYYYYYYYYYY");
             e.printStackTrace();
 
         }

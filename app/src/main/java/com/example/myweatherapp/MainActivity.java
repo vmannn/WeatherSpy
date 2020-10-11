@@ -1,43 +1,40 @@
+//Victor Ochia. 2020 WeatherSpy
+
+
 package com.example.myweatherapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
-import android.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -47,18 +44,17 @@ import android.os.Handler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.URL;
+
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
-    String tag = "0";
+
     String API_KEY = "4e50edb8686ec742118a9852ad2960dd";
     long MINIMUM_TIME = 5000;
     float MINIMUM_DISTANCE = 1000;
@@ -72,10 +68,9 @@ public class MainActivity extends AppCompatActivity {
     LocationListener mYLocationListener;
     boolean IsDaily;
     boolean IsForecast;
-    RequestParams forecastparams = new RequestParams();
+    RequestParams forecastParams = new RequestParams();
 
-    JSONObject daily;
-    JSONObject forecast;
+
     ArrayList <WeatherPack> mWeatherPacks = new ArrayList<>();
 
 
@@ -83,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getForecast(); // from savedInstanceState
 
 
     }
@@ -92,49 +89,224 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.d("MyWeatherApp", "onResume activated");
-        Log.d("MyWeatherApp", "Getting data for location");
-
-        final EditText newLocation = findViewById(R.id.AddLocation);
-
 
         final Handler handler = new Handler();
         final int delay = 900000; //15 minutes
 
         handler.postDelayed(new Runnable(){
             public void run(){
-                CurrentLocationWeather();
+                CurrentLocationWeather(); //calls to weather Provider to update
                 handler.postDelayed(this, delay);
             }
         }, delay);
 
         CurrentLocationWeather();
+        LoadForecasts(); //load forecasts from SharedPreferences
+
+
+
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        saveForecast(); //Save to sharedPreferences
+
+    }
+
+    //Function saves WeatherPack to sharedPreferences
+    private void saveForecast(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String jsonWeather = gson.toJson(mWeatherPacks);
+        editor.putString("Forecast Weather", jsonWeather);
+        editor.apply();
+
+
+    }
+
+    //Function Pulls forecast from sharedPreferences
+    private void getForecast(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String jsonWeather = sharedPreferences.getString("Forecast Weather", null);
+        Type type = new TypeToken<ArrayList<WeatherPack>>() {}.getType();
+        mWeatherPacks = gson.fromJson(jsonWeather, type);
+
+        if(mWeatherPacks == null){
+
+           mWeatherPacks = new ArrayList<>();
+
+        }
+
+        else{
+
+            if(mWeatherPacks.size() > 1){
+
+                Button edit = findViewById(R.id.editButton);
+                edit.setVisibility(View.VISIBLE);
+
+                Button done = findViewById(R.id.doneButton);
+                done.setVisibility(View.GONE);
+
+            }
+
+
+        }
+
+
+
+
+    }
+
+    //Loads the users saved forecasts when app is restarted
+    void LoadForecastView(){
+
+
+        final String[] DaysOfTheWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+                "Friday", "Saturday"};
+
+
+        String weekday = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(System.currentTimeMillis());
+
+        int arrayStart = 0;
+
+        for(int i = 0; i < DaysOfTheWeek.length; ++i){
+
+            if (weekday.equals(DaysOfTheWeek[i])) {
+                arrayStart = i;
+                break;
+            }
+
+        }
+
+        LinearLayout forecastLayout = findViewById(R.id.ForecastLayout);
+
+        //Responsible for the dynamic layout
+        for(int i = 1; i < mWeatherPacks.size() && mWeatherPacks.size() != 1; ++i) {
+
+            LinearLayout forecastContainer = new LinearLayout(this);
+            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            forecastContainer.setLayoutParams(lp1);
+            forecastContainer.setOrientation(LinearLayout.HORIZONTAL);
+            forecastContainer.setId(View.generateViewId());
+            LinearLayout cityWrap = new LinearLayout(this);
+            cityWrap.setLayoutParams(lp1);
+            cityWrap.setOrientation(LinearLayout.VERTICAL);
+            LinearLayout.LayoutParams lp3 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout deleteWrap = new LinearLayout(this);
+            deleteWrap.setOrientation(LinearLayout.HORIZONTAL);
+            deleteWrap.setLayoutParams(lp3);
+            TextView currentCity = new TextView(this);
+            currentCity.setLayoutParams(lp3);
+            currentCity.setText(mWeatherPacks.get(i).getWeather().getCity());
+            currentCity.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+            cityWrap.addView(deleteWrap);
+            deleteWrap.addView(currentCity);
+            GridLayout gridLayout = new GridLayout(this);
+            gridLayout.setColumnCount(8);
+            gridLayout.setRowCount(1);
+            gridLayout.setLayoutParams(lp1);
+            gridLayout.setId(View.generateViewId());
+            HorizontalScrollView scroll = new HorizontalScrollView(this);
+            scroll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            scroll.setScrollbarFadingEnabled(false);
+
+            forecastLayout.addView(cityWrap);
+            cityWrap.addView(scroll);
+
+
+            scroll.addView(forecastContainer);
+
+            forecastContainer.addView(gridLayout);
+            final ScrollView ScrollMe = findViewById(R.id.parentScroll);
+
+
+            for(int j = 0, l = arrayStart; j < mWeatherPacks.get(i).Forecast.size(); ++j) {
+
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                ForecastDayTemplate forecastDayTemplate = new ForecastDayTemplate();
+                fragmentTransaction.add(gridLayout.getId(), forecastDayTemplate);
+                fragmentTransaction.commit();
+                Bundle forecastDayBundle = new Bundle();
+                forecastDayBundle.putString("dailyHigh", mWeatherPacks.get(i).getForecast().get(j).getMaximum_temperature());
+                forecastDayBundle.putString("dailyLow", mWeatherPacks.get(i).getForecast().get(j).getMinimum_temperature());
+                forecastDayBundle.putString("Icon", mWeatherPacks.get(i).getForecast().get(j).getIcon());
+
+                if(j == 0)
+                    forecastDayBundle.putString("weekday", "Today");
+                else
+                    forecastDayBundle.putString("weekday", DaysOfTheWeek[l]);
+
+
+                if(l == DaysOfTheWeek.length -1)
+                    l = 0;
+                else
+                    l+= 1;
+
+                forecastDayTemplate.setArguments(forecastDayBundle);
+
+
+                ScrollMe.fullScroll(ScrollView.FOCUS_DOWN);
+
+            }
+
+
+
+        }
+
+
+
+
+    }
+
+    //outer function called when app is Restarted
+    private void LoadForecasts(){
+
+        TextView count = findViewById(R.id.City);
+        count.setText(String.valueOf(mWeatherPacks.size()));
+
+        SetView();
+        LoadForecastView();
+
+
+    }
+
+
+
+    //Loads data into requestParams for API use
     private void locationSetup(String latitude, String longitude, int controlFlow){
 
         String units = "imperial";
         String exclude = "current,minutely,hourly";
 
-        RequestParams dailyparams = new RequestParams();
+        RequestParams dailyParams = new RequestParams();
 
-        dailyparams.put("lon", longitude);
-        dailyparams.put("lat", latitude);
-        dailyparams.put("units", units);
-        dailyparams.put("appid", API_KEY);
-        forecastparams.put("lon", longitude);
-        forecastparams.put("lat", latitude);
-        forecastparams.put("units", units);
-        forecastparams.put("appid", API_KEY);
-        forecastparams.put("exclude", exclude);
-        APICall(dailyparams, controlFlow);
-
-
-
+        dailyParams.put("lon", longitude);
+        dailyParams.put("lat", latitude);
+        dailyParams.put("units", units);
+        dailyParams.put("appid", API_KEY);
+        forecastParams.put("lon", longitude);
+        forecastParams.put("lat", latitude);
+        forecastParams.put("units", units);
+        forecastParams.put("appid", API_KEY);
+        forecastParams.put("exclude", exclude);
+        APICall(dailyParams, controlFlow);
 
 
     }
 
+
+    //Location manager and listener which retrieves our longitude and latitude for our current location
     private void CurrentLocationWeather() {
 
         mYLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -142,15 +314,6 @@ public class MainActivity extends AppCompatActivity {
         mYLocationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-
-
-
-                Button edit = findViewById(R.id.editButton);
-
-                //if(mWeatherPacks.size() > 1)
-
-
-
 
                 String longitude = String.valueOf(location.getLongitude());
                 String latitude = String.valueOf(location.getLatitude());
@@ -177,15 +340,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-
+        //permission to retrieve current location
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    Activity#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for Activity#requestPermissions for more details.
+
 
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQ_CODE);
             return;
@@ -196,13 +353,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQ_CODE){
 
             if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
 
+                //call to retrieve data from locationManager
                 CurrentLocationWeather();
             }
 
@@ -217,6 +375,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Function retrieves url to get weather icon from API
     static public String GetIconUrl(String icon){
 
         return "https://openweathermap.org/img/wn/" + icon + "@2x.png";
@@ -224,25 +383,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void Edit(View v){
-
-        if(mWeatherPacks.size() < 2){
-
-
-
-           // Toast.makeText(MainActivity.this, "Add a forecast from a city to edit", Toast.LENGTH_LONG).show();
-
-        }
-
-
-    }
-
-
-
+    //Function Adds location forecast from a desired city
     public void addLocation(View v){
 
         Button edit = findViewById(R.id.editButton);
         Button done = findViewById(R.id.doneButton);
+
 
 
         if(edit.getVisibility() == View.INVISIBLE) {
@@ -250,24 +396,22 @@ public class MainActivity extends AppCompatActivity {
             edit.setVisibility(View.VISIBLE);
             done.setVisibility(View.GONE);
 
-
-
         }
 
 
-        ImageView add =  findViewById(R.id.addbutton);
         final EditText locationText = findViewById(R.id.AddLocation);
 
 
                 String Location = locationText.getText().toString();
+                locationText.getText().clear();
 
                 RequestParams CityParam = new RequestParams();
                 CityParam.put("q", Location);
                 CityParam.put("appid", API_KEY);
 
-                AsyncHttpClient myclient = new AsyncHttpClient();
+                AsyncHttpClient myClient = new AsyncHttpClient();
 
-                myclient.get(API_URL, CityParam, new JsonHttpResponseHandler() {
+                myClient.get(API_URL, CityParam, new JsonHttpResponseHandler() {
 
 
                     @Override
@@ -279,11 +423,9 @@ public class MainActivity extends AppCompatActivity {
                          String longitude = String.valueOf(response.getJSONObject("coord").getDouble("lon"));
                          String latitude = String.valueOf(response.getJSONObject("coord").getDouble("lat"));
 
-                         Log.d("MyWeatherApp", "longitude new: " + String.valueOf(response.getJSONObject("coord").getDouble("lon")));
-                         Log.d("MyWeatherApp", "latitude new: " + String.valueOf(response.getJSONObject("coord").getDouble("lat")));
 
 
-                         locationSetup(latitude, longitude, 1);
+                         locationSetup(latitude, longitude, 1); //controlFlow 1: used to set forecast
 
                      }catch(JSONException e){
                          e.printStackTrace();
@@ -293,6 +435,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     public void onFailure(int statusCode, Header[] headers, Throwable e, final JSONObject response) {
+
+                        Toast.makeText(getApplicationContext(), "Please enter a valid city", Toast.LENGTH_LONG).show();
 
 
                     }
@@ -304,46 +448,44 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void APICall(RequestParams dailyparams, final int controlFlow){
+    //Call that retrieves all the weather data we need
+    private void APICall(RequestParams dailyParams, final int controlFlow){
 
-        AsyncHttpClient myclient = new AsyncHttpClient();
-        CurrentWeatherDataModel citypack = new CurrentWeatherDataModel();
+        AsyncHttpClient myClient = new AsyncHttpClient();
 
 
 
-        myclient.get(API_URL, dailyparams, new JsonHttpResponseHandler(){
+        myClient.get(API_URL, dailyParams, new JsonHttpResponseHandler(){
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, final JSONObject response){
 
 
-                Log.d("MyWeatherApp", response.toString() + "\n***********************************************************\n");
-
-                AsyncHttpClient myclient2 = new AsyncHttpClient();
+                AsyncHttpClient myClient2 = new AsyncHttpClient();
 
 
-                myclient2.get(FORECAST_API_URL, forecastparams, new JsonHttpResponseHandler(){
+                myClient2.get(FORECAST_API_URL, forecastParams, new JsonHttpResponseHandler(){
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response2){
 
-                        WeatherPack mypack = new WeatherPack();
-                        mypack.setForecast(ForecastDataModel.convertforecastjson(response2));
-                        mypack.setWeather(CurrentWeatherDataModel.convertJson(response));
-                        Log.d("DyWeatherApp", "HASASDF: " + response.toString());
+                        WeatherPack myPack = new WeatherPack();
+                        myPack.setForecast(ForecastDataModel.convertforecastjson(response2));
+                        myPack.setWeather(CurrentWeatherDataModel.convertJson(response));
 
-                        if(controlFlow == 0) {
+
+                        if(controlFlow == 0) { // control flow 0 = update our current location
                             if (mWeatherPacks.isEmpty()) {
-                                mWeatherPacks.add(mypack);
+                                mWeatherPacks.add(myPack); //current location should always be at index 0 of weatherpack
                             } else {
                                 if (mWeatherPacks.get(0) != null)
-                                    mWeatherPacks.set(0, mypack);
+                                    mWeatherPacks.set(0, myPack);
                             }
                             SetView();
                         }
                         else{
 
-                            mWeatherPacks.add(mypack);
+                            mWeatherPacks.add(myPack); //if we are adding a forecast
                             SetForecastView();
 
                         }
@@ -353,8 +495,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response2){
                         Log.e("MyWeatherApp", "faiure" + e.toString() + " " + statusCode);
                         Log.d("MyWeatherApp", "faiure" + e.toString() + " " + statusCode);
-                        Toast.makeText(MainActivity.this, "Network error please try again forecast", Toast.LENGTH_SHORT).show();
-                        IsForecast = false;
+                        Toast.makeText(MainActivity.this, "Network error please try again", Toast.LENGTH_SHORT).show();
 
 
                     }
@@ -373,57 +514,30 @@ public class MainActivity extends AppCompatActivity {
 
 
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
-                Log.e("MyWeatherApp", "faiure " + e.toString() + " " + statusCode);
-                Log.d("MyWeatherApp", "faiure " + e.toString() + " " + statusCode);
-                Toast.makeText(MainActivity.this, "Network error please try again daily", Toast.LENGTH_SHORT).show();
 
-                IsDaily = false;
+                Toast.makeText(MainActivity.this, "Please enter a valid city", Toast.LENGTH_SHORT).show();
+
+
 
             }
 
 
         });
 
-       /* AsyncHttpClient myclient2 = new AsyncHttpClient();
-
-
-        myclient2.get(FORECAST_API_URL, forecastparams, new JsonHttpResponseHandler(){
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response2){
-
-             //   Log.d("MyWeatherApp", response2.toString());
-                IsForecast = true;
-                forecast = response2;
-
-            }
-
-            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response2){
-                Log.e("MyWeatherApp", "faiure" + e.toString() + " " + statusCode);
-                Log.d("MyWeatherApp", "faiure" + e.toString() + " " + statusCode);
-                Toast.makeText(MainActivity.this, "Network error please try again forecast", Toast.LENGTH_SHORT).show();
-                IsForecast = false;
-
-
-            }
-
-
-        }); */
-
-
-        //if(IsDaily && IsForecast){
 
     }
 
 
+    //done button is pressed
     public void doneWithDelete(View v){
 
-        doneDeleting();
+        doneDeleting(); //function deletes our delete buttons after user deletes a forecast
 
     }
 
 
 
+    //function deletes our delete buttons after user deletes a forecast
     public void doneDeleting(){
 
 
@@ -459,6 +573,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //edit button is pressed. Function adds delete buttons to forecasts and sets their onclick listeners
     public void deleteForecast(View v){
 
 
@@ -485,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         int count = forecastLayout.getChildCount();
-        View current = null;
+        View current;
 
 
         for(int i = 2; i < count; ++i) {
@@ -495,10 +610,6 @@ public class MainActivity extends AppCompatActivity {
             LinearLayout cityWrap = findViewById(current.getId());
             LinearLayout hg = (LinearLayout) cityWrap.getChildAt(0);
 
-            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-            LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
             final ImageButton deleteButton = new ImageButton(this);
             deleteButton.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             deleteButton.setImageResource(R.drawable.deletebutton);
@@ -507,6 +618,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+            final int deleteFromWeatherPack = i;
+
+            //onclick listeners for forecast delete buttons
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -525,20 +639,19 @@ public class MainActivity extends AppCompatActivity {
                     Button doneButton = findViewById(R.id.doneButton);
                     doneButton.setVisibility(View.GONE);
 
+                    mWeatherPacks.remove(deleteFromWeatherPack -1);
+                    TextView count = findViewById(R.id.City);
+                    count.setText(String.valueOf(mWeatherPacks.size()));
+
+                    if(mWeatherPacks.size() < 2){
+
+                        editButton.setVisibility(View.GONE);
+
+                    }
+
 
                 }
             });
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -548,6 +661,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Sets the view for current location
+    @SuppressLint("SetTextI18n")
     void SetView(){
 
         if(mWeatherPacks.isEmpty()){
@@ -559,13 +674,12 @@ public class MainActivity extends AppCompatActivity {
         cityNameForecast.setText(mWeatherPacks.get(0).getWeather().getCity());
        city.setText(mWeatherPacks.get(0).getWeather().getCity());
 
-       String iconurl = GetIconUrl(mWeatherPacks.get(0).getWeather().getIcon());
+       String iconUrl = GetIconUrl(mWeatherPacks.get(0).getWeather().getIcon());
 
-       Log.d("MyWeatherApp", iconurl);
 
         ImageView Icon = findViewById(R.id.Icon);
 
-        Picasso.get().load(iconurl).resize(100, 100).into(Icon);
+        Picasso.get().load(iconUrl).resize(100, 100).into(Icon);
 
         TextView temp = findViewById(R.id.Temperature);
         temp.setText(mWeatherPacks.get(0).getWeather().getTemperature() + "°F");
@@ -575,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         final String[] DaysOfTheWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-                "Friday", "Saturday"};
+                "Friday", "Saturday"}; //used to get the current day of the week and iterate through
 
 
         String weekday = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(System.currentTimeMillis());
@@ -629,6 +743,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //sets the dynamic views for the forecasts
     void SetForecastView(){
 
 
@@ -654,8 +769,6 @@ public class MainActivity extends AppCompatActivity {
         for(int i = mWeatherPacks.size() -1; i < mWeatherPacks.size() && mWeatherPacks.size() != 1; ++i) {
 
             LinearLayout forecastContainer = new LinearLayout(this);
-            Resources r = getResources();
-            float height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 140, r.getDisplayMetrics());
             LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             forecastContainer.setLayoutParams(lp1);
             forecastContainer.setOrientation(LinearLayout.HORIZONTAL);
@@ -691,7 +804,7 @@ public class MainActivity extends AppCompatActivity {
             scroll.addView(forecastContainer);
 
             forecastContainer.addView(gridLayout);
-            final ScrollView Scrollme = findViewById(R.id.parentScroll);
+            final ScrollView ScrollMe = findViewById(R.id.parentScroll);
 
 
             for(int j = 0, l = arrayStart; j < mWeatherPacks.get(i).Forecast.size(); ++j) {
@@ -721,7 +834,7 @@ public class MainActivity extends AppCompatActivity {
                 forecastDayTemplate.setArguments(forecastDayBundle);
 
 
-                Scrollme.fullScroll(ScrollView.FOCUS_DOWN);
+                ScrollMe.fullScroll(ScrollView.FOCUS_DOWN);
 
             }
 
@@ -734,6 +847,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //used to stop location listener from updating and running in the background during pause
     @Override
     protected void onPause() {
         super.onPause();

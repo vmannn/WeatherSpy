@@ -1,7 +1,11 @@
+//Victor Ochia. 2020 WeatherSpy
+
+
 package com.example.myweatherapp;
 
 import java.util.ArrayList;
 
+//This class holds a forecast and current weather for a city
 public class WeatherPack {
 
     ArrayList<ForecastDataModel> Forecast;

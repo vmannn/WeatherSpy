@@ -33,49 +33,49 @@
 
                 <fragment
                     android:id="@+id/day1"
-                    android:name ="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name ="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day2"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day3"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day4"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day5"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day6"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day7"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 
                 <fragment
                     android:id="@+id/day8"
-                    android:name="com.example.myweatherapp.ForecastDayTemplate"
+                    android:name="com.vic.myweatherapp.ForecastDayTemplate"
                     android:layout_width="110dp"
                     android:layout_height="match_parent" />
 

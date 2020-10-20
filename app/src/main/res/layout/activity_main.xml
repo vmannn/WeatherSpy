@@ -164,49 +164,49 @@
 
                             <fragment
                                 android:id="@+id/fragment"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment2"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment3"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment4"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment5"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment6"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment7"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 
                             <fragment
                                 android:id="@+id/fragment8"
-                                android:name="com.example.myweatherapp.ForecastDayTemplate"
+                                android:name="com.vic.myweatherapp.ForecastDayTemplate"
                                 android:layout_width="110dp"
                                 android:layout_height="match_parent" />
 

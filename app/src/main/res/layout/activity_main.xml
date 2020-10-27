@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:ems="10"
-                    android:hint="Add Location"
+                    android:hint="@string/add_location"
                     android:inputType="textPersonName"
                     android:textColor="@color/cardview_dark_background"
                     android:textStyle="bold" />
@@ -46,8 +46,6 @@
                         android:id="@+id/addbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:clickable="true"
                         android:focusable="true"
                         android:onClick="addLocation"
                         app:srcCompat="@drawable/addbutton"
@@ -73,7 +71,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="70sp"
                 android:layout_gravity="center"
-                android:singleLine="false"
                 android:text="@string/location"
                 android:textSize="30sp" />
 
@@ -92,7 +89,6 @@
                 android:id="@+id/Icon"
                 android:layout_width="match_parent"
                 android:layout_height="130sp"
-                android:adjustViewBounds="true"
                 app:srcCompat="@drawable/not_sure" />
 
             <TextView
@@ -107,7 +103,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="right"
+                android:gravity="end"
                 android:orientation="horizontal"
                 android:paddingRight="17dp">
 
@@ -116,10 +112,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00E02525"
-                    android:drawableRight="@drawable/settingsize"
+                    android:drawableEnd="@drawable/settingsize"
                     android:onClick="deleteForecast"
-                    android:text="Edit"
-                    android:textAlignment="center"
+                    android:text="@string/edit_button"
                     android:visibility="invisible" />
 
                 <Button
@@ -127,10 +122,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="#00E02525"
-                    android:drawableRight="@drawable/settingsize"
-                    android:text="Done"
+                    android:drawableEnd="@drawable/settingsize"
+                    android:text="@string/done_button"
                     android:onClick="doneWithDelete"
-                    android:textAlignment="center"
                     android:visibility="invisible" />
             </LinearLayout>
 

@@ -6,5 +6,8 @@
     <string name="description">Description</string>
     <string name="location">Location</string>
     <string name="current_location">Current Location</string>
+    <string name="done_button">Done</string>
     <string name="city">City</string>
+    <string name="edit_button">Edit</string>
+    <string name="add_location">Add Location</string>
 </resources>
